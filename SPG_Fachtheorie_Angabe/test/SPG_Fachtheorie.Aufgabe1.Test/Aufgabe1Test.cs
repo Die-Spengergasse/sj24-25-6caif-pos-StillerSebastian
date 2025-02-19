@@ -3,6 +3,7 @@ using SPG_Fachtheorie.Aufgabe1.Infrastructure;
 using SPG_Fachtheorie.Aufgabe1.Model;
 using System;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Xunit;
 
 namespace SPG_Fachtheorie.Aufgabe1.Test
@@ -10,51 +11,44 @@ namespace SPG_Fachtheorie.Aufgabe1.Test
     [Collection("Sequential")]
     public class Aufgabe1Test
     {
-        private DamageContext GetEmptyDbContext()
+        private AppointmentContext GetEmptyDbContext()
         {
-            // Database created in C:\Scratch\Aufgabe1_Test\Debug\net8.0\damages.db
             var options = new DbContextOptionsBuilder()
-                .UseSqlite(@"Data Source=damages.db")
+                .UseSqlite(@"Data Source=cash.db")
                 .Options;
 
-            var db = new DamageContext();
+            var db = new AppointmentContext(options);
             db.Database.EnsureDeleted();
             db.Database.EnsureCreated();
             return db;
         }
 
+        // Creates an empty DB in Debug\net8.0\cash.db
         [Fact]
         public void CreateDatabaseTest()
         {
             using var db = GetEmptyDbContext();
-            Assert.True(db.Employees.Count() == 0);
+           
+            Assert.True(db.Database.EnsureCreated());
         }
 
         [Fact]
-        public void AddEmployeeSuccessTest()
+        public void AddCashierSuccessTest()
         {
-            // TODO: Remove Exception and add your code here
-            using var db = GetEmptyDbContext();
+            using var db=GetEmptyDbContext();
+            var Cashier = new Cashier();
+        }
+
+        [Fact]
+        public void AddPaymentSuccessTest()
+        {
 
         }
 
         [Fact]
-        public void AddDamageWithReportSuccessTest()
+        public void EmployeeDiscriminatorSuccessTest()
         {
-            // TODO: Remove Exception and add your code here
-            using var db = GetEmptyDbContext();
-            var roomnumber = db.roomnumbers.Add(new Roomnumber("A","2","15"));
-            var staff = db.Employees.Add(new Employee("John", "Doe","JohnDoe","A2.15"));
-            var room = db.rooms.Add(new Room(roomnumber, "Stammklasse"));
-            var damage = db.Damages.Add(new Damage(room, "A broken", "Reported"));
-            var report = db.DamageReport.Add(new DamageReport(damage, staff, DateTime.Now));    
-        }
 
-        [Fact]
-        public void AddRepairationSuccessTest()
-        {
-            // TODO: Remove Exception and add your code here
-            throw new NotImplementedException();
         }
     }
 }
