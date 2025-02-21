@@ -18,11 +18,13 @@ namespace SPG_Fachtheorie.Aufgabe1.Infrastructure
         public DbSet<PaymentItem> PaymentItems => Set<PaymentItem>();
         public AppointmentContext(DbContextOptions options)
             : base(options)
-        {}
+        { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            modelBuilder.Entity<Employee>().OwnsOne(e => e.Address);
+            modelBuilder.Entity<Employee>().HasDiscriminator(e => e.Type);
+
         }
     }
 }

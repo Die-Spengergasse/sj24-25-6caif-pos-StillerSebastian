@@ -13,6 +13,15 @@ namespace SPG_Fachtheorie.Aufgabe1.Model
             Address = address;
         }
 
+        protected Employee(int registrationNumber, string firstName, string lastName, Address address, string type)
+        {
+            RegistrationNumber = registrationNumber;
+            FirstName = firstName;
+            LastName = lastName;
+            Address = address;
+            Type = type;
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int RegistrationNumber { get; set; }
@@ -22,6 +31,8 @@ namespace SPG_Fachtheorie.Aufgabe1.Model
         public string LastName { get; set; }
         [MaxLength(255)]
         public Address Address { get; set; }
+        public string Type { get; set; }
+
 
     }
 }
