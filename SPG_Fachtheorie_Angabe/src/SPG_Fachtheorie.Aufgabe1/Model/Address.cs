@@ -1,20 +1,20 @@
 ﻿namespace SPG_Fachtheorie.Aufgabe1.Model
 {
-    public class Damage
+    public class Address
     {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-        protected Damage() { }
+        protected Address() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-        public int Id { get; set; }
-        public Room Room { get; set; }
-      public string Description { get; set; }
-      public RepairStatus Status { get; set; }
-
-      public Damage(Room room, string description, RepairStatus status)
+        public Address(string street, string city, string zip)
         {
-            Room = room;
-            Description = description;
-            Status = status;
+            Street = street;
+            City = city;
+            Zip = zip;
         }
+        public int id { get; set; }
+        public string Street { get; set; }
+        public string City { get; set; }
+        public string Zip { get; set; }
+
     }
 }
