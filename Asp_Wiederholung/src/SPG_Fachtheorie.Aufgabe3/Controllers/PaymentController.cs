@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Any;
 using SPG_Fachtheorie.Aufgabe1.Infrastructure;
 using SPG_Fachtheorie.Aufgabe1.Model;
+using SPG_Fachtheorie.Aufgabe3.commands;
 using SPG_Fachtheorie.Aufgabe3.Dtos;
 
 namespace SPG_Fachtheorie.Aufgabe3.Controllers
@@ -108,6 +109,48 @@ namespace SPG_Fachtheorie.Aufgabe3.Controllers
             return Ok(payments);
         }
 
+        [HttpPost("payment")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult AddPayment(NewPaymentCommand cmd)
+        {
+            // Validate the payment type
+            if (!Enum.TryParse<PaymentType>(cmd.paymentType, true, out var paymentType))
+            {
+                return BadRequest("Invalid payment type.");
+            }
+
+            // Retrieve the cash desk
+            var cashDesk = _db.CashDesks.FirstOrDefault(c => c.Number == cmd.cashdeskNumber);
+            if (cashDesk == null)
+            {
+                return BadRequest("Invalid cash desk number.");
+            }
+
+            // Retrieve the employee
+            var employee = _db.Employees.FirstOrDefault(e => e.RegistrationNumber == cmd.employeeRegistrationNumber.RegistrationNumber);
+            if (employee == null)
+            {
+                return BadRequest("Invalid employee registration number.");
+            }
+
+            // Create the new payment
+            var payment = new Payment(cashDesk, cmd.paymentDateTime, employee, paymentType);
+
+            // Add the payment to the database
+            _db.Payments.Add(payment);
+            _db.SaveChanges();
+
+            // Return the created response
+            return CreatedAtAction(nameof(GetPayment), new { id = payment.Id }, new PaymentDto(
+                payment.Id,
+                payment.Employee.FirstName,
+                payment.Employee.LastName,
+                payment.CashDesk.Number,
+                payment.PaymentType.ToString(),
+                payment.PaymentItems.Sum(item => item.Price * item.Amount) // Calculate total amount
+            ));
+        }
 
 
     }
