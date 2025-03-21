@@ -144,6 +144,10 @@ namespace SPG_Fachtheorie.Aufgabe3.Controllers
         [HttpPut("/api/paymentitems/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult UpdatePaymentItem (int registrationNumber)
+        {
+
+        }
     }
 }
