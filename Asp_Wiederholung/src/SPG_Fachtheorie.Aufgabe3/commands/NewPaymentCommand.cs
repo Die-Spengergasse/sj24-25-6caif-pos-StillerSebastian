@@ -1,37 +1,26 @@
 ﻿using SPG_Fachtheorie.Aufgabe1.Model;
 using System.ComponentModel.DataAnnotations;
 
-namespace SPG_Fachtheorie.Aufgabe3.commands
+namespace SPG_Fachtheorie.Aufgabe3.Commands
 {
-    public record NewPaymentCommand
-    (
-        int cashdeskNumber,
-        [WithinOneMinute]
-        DateTime paymentDateTime,
-        string paymentType,
-        [Range(1000,9999,ErrorMessage = "Invalid RegistrationNumber")]
-        Employee employeeRegistrationNumber
-    );
-    
-
-    public class WithinOneMinuteAttribute : ValidationAttribute
+    public record NewPaymentCommand(
+        [Range(1, int.MaxValue, ErrorMessage = "Invalid cashdesk number." )]
+        int CashDeskNumber,
+        DateTime PaymentDateTime,
+        string PaymentType,
+        [Range(1, int.MaxValue, ErrorMessage = "Invalid EmployeeRegistrationNumber." )]
+        int EmployeeRegistrationNumber) : IValidatableObject
     {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (value is DateTime dateTime)
+            if (PaymentDateTime > DateTime.Now.AddMinutes(1))
+                yield return new ValidationResult("Invalid payment date",
+                    new string[] { nameof(PaymentDateTime) });
+            if (!Enum.TryParse<PaymentType>(PaymentType, out var _))
             {
-                var now = DateTime.UtcNow;
-                if (dateTime >= now.AddMinutes(-1) && dateTime <= now.AddMinutes(1))
-                {
-                    return ValidationResult.Success;
-                }
-                else
-                {
-                    return new ValidationResult("The payment date and time must be within one minute of the current time.");
-                }
+                yield return new ValidationResult("Invalid payment type",
+                    new string[] { nameof(PaymentType) });
             }
-            return new ValidationResult("Invalid date and time format.");
         }
     }
-
 }

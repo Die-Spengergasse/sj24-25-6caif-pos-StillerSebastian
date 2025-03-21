@@ -24,4 +24,3 @@ namespace SPG_Fachtheorie.Aufgabe3.Commands
         }
     }
 }
-
