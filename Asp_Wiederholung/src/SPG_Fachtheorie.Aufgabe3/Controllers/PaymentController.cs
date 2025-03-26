@@ -145,9 +145,58 @@ namespace SPG_Fachtheorie.Aufgabe3.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult UpdatePaymentItem (int registrationNumber)
+        public IActionResult UpdatePaymentItem(int id, [FromBody] UpdatePaymentItemCommand cmd)
         {
+            var paymentItem = _db.PaymentItems.FirstOrDefault(pi => pi.Id == id);
+            if (paymentItem == null)
+            {
+                return NotFound();
+            }
 
+            paymentItem.ArticleName = cmd.ArticleName;
+            paymentItem.Amount = cmd.Amount;
+            paymentItem.Price = cmd.Price;
+
+            try
+            {
+                _db.SaveChanges();
+            }
+            catch (DbUpdateException e)
+            {
+                return Problem(e.InnerException?.Message ?? e.Message, statusCode: 400);
+            }
+
+            return NoContent();
+        }
+        [HttpPatch("/api/payments/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult ConfirmPayment(int id)
+        {
+            var payment = _db.Payments.FirstOrDefault(p => p.Id == id);
+            if (payment == null)
+            {
+                return Problem("Payment not found", statusCode: 404);
+            }
+
+            if (payment.Confirmed != null)
+            {
+                return Problem("Payment already confirmed", statusCode: 400);
+            }
+
+            payment.Confirmed = DateTime.UtcNow;
+
+            try
+            {
+                _db.SaveChanges();
+            }
+            catch (DbUpdateException e)
+            {
+                return Problem(e.InnerException?.Message ?? e.Message, statusCode: 400);
+            }
+
+            return NoContent();
         }
     }
 }
