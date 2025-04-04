@@ -5,10 +5,11 @@ using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace SPG_Fachtheorie.Aufgabe1.Services
 {
-    class PaymentserviceException():Exception
+    public class PaymentserviceException : Exception
     {
-        
+        public PaymentserviceException(string message) : base(message) { }
     }
 }

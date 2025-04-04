@@ -1,9 +1,9 @@
-﻿using System;
+﻿using SPG_Fachtheorie.Aufgabe3.commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SPG_Fachtheorie.Aufgabe1.Infrastructure;
 using SPG_Fachtheorie.Aufgabe1.Model;
-using SPG_Fachtheorie.Aufgabe3.commands; // Ensure this using directive is present
 
 // Rest of the file content remains unchanged
 namespace SPG_Fachtheorie.Aufgabe1.Services
@@ -86,6 +86,3 @@ namespace SPG_Fachtheorie.Aufgabe1.Services
     }
     }
 
-
-}
-}
