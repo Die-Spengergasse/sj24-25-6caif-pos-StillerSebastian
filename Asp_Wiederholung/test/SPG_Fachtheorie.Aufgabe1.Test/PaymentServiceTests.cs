@@ -44,7 +44,7 @@ namespace SPG_Fachtheorie.Aufgabe1.Test
             // Arrange
             var dbContext = GetEmptyDbContext();
             var paymentService = new PaymentService(dbContext);
-
+            
             var validCommand = new NewPaymentCommand
             {
                 CashDesk = new CashDesk(1), // Fixed: Corrected syntax to initialize properties
