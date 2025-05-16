@@ -36,9 +36,11 @@ namespace SPG_Fachtheorie.Aufgabe3.Test
             Assert.NotNull(payments);
             Assert.Equal(expectedCount, payments.Count);
             if (cashDesk.HasValue)
-                Assert.True(payments.All(p => p.CashDesk.Number == cashDesk));
+                Assert.True(payments.All(p =>
+                    (int?)p.GetType().GetProperty("CashDeskNumber")?.GetValue(p) == cashDesk));
             if (!string.IsNullOrEmpty(dateFrom))
-                Assert.True(payments.All(p => p.Date >= DateTime.Parse(dateFrom)));
+                Assert.True(payments.All(p =>
+                    DateTime.TryParse(p.GetType().GetProperty("Date")?.GetValue(p)?.ToString(), out var d) && d >= DateTime.Parse(dateFrom)));
         }
         [Theory]
         [InlineData(1, System.Net.HttpStatusCode.OK)] // Valid ID
@@ -68,10 +70,10 @@ namespace SPG_Fachtheorie.Aufgabe3.Test
         {
             // Arrange
             var requestUrl = $"/api/payments/{id}";
-            var payload = validData ? new { Confirmed = true } : new { InvalidField = "Invalid" };
+            object payload = !validData ? new { InvalidField = "Invalid" } : new { Confirmed = true };
 
             // Act
-            var (statusCode, _) = await _factory.PatchHttpContent(requestUrl, payload);
+            (System.Net.HttpStatusCode statusCode, System.Text.Json.JsonElement _) = await _factory.PatchHttpContent(requestUrl, payload);
 
             // Assert
             Assert.Equal(expectedStatusCode, statusCode);
